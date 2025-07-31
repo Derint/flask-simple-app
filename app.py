@@ -31,7 +31,7 @@ def get_data():
 
 
 @app.route("/api/data/new", methods=["GET"])
-def get_data():
+def get_data_new():
     sample_data = {"data": [1, 2, 3, 4], "count": 4}
     return jsonify(sample_data)
 
