@@ -30,5 +30,11 @@ def get_data():
     return jsonify(sample_data)
 
 
+@app.route("/api/data/new", methods=["GET"])
+def get_data():
+    sample_data = {"data": [1, 2, 3, 4], "count": 4}
+    return jsonify(sample_data)
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
