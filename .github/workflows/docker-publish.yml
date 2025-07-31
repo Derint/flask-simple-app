@@ -24,7 +24,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set dynamic image name and version tag
+      - name: Extract image version from deployment.yaml
         id: vars
         run: |
           REPO="${{ github.repository }}"
@@ -32,7 +32,11 @@ jobs:
           BRANCH="${GITHUB_REF##*/}"
           BRANCH_NAME=$(echo "$BRANCH" | tr '[:upper:]' '[:lower:]' | tr '/' '_')
           OWNER_LOWER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
-          VERSION_TAG="v1.0.${{ github.run_number }}"
+
+          # Extract version tag from the image field in the YAML file
+          IMAGE_LINE=$(grep -E 'image:\s*ghcr\.io/.+:[0-9]+\.[0-9]+\.[0-9]+' argocd/deployment.yaml)
+          VERSION_TAG=$(echo "$IMAGE_LINE" | sed -E 's/.*:([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
+
           IMAGE_NAME="ghcr.io/${OWNER_LOWER}/flask-simple-app_${BRANCH_NAME}"
 
           echo "repo_name=$REPO_NAME" >> $GITHUB_OUTPUT

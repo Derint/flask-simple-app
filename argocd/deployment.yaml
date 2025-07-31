@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
         - name: flask-container
-          image: ghcr.io/derint/flask-simple-app_main:1.0.1
+          image: ghcr.io/derint/flask-simple-app_main:1.0.2
           ports:
             - containerPort: 5000
