@@ -1,0 +1,49 @@
+name: Build & Push Docker Images to GHCR
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set dynamic image name and version tag
+        id: vars
+        run: |
+          REPO="${{ github.repository }}"
+          REPO_NAME=$(basename "$REPO" | tr '[:upper:]' '[:lower:]')
+          BRANCH="${GITHUB_REF##*/}"
+          BRANCH_NAME=$(echo "$BRANCH" | tr '[:upper:]' '[:lower:]' | tr '/' '_')
+          OWNER_LOWER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          VERSION_TAG="v1.0.${{ github.run_number }}"
+          IMAGE_NAME="ghcr.io/${OWNER_LOWER}/flask-simple-app_${BRANCH_NAME}"
+
+          echo "repo_name=$REPO_NAME" >> $GITHUB_OUTPUT
+          echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
+          echo "owner=$OWNER_LOWER" >> $GITHUB_OUTPUT
+          echo "version_tag=$VERSION_TAG" >> $GITHUB_OUTPUT
+          echo "image_name=$IMAGE_NAME" >> $GITHUB_OUTPUT
+
+      - name: Build and push images
+        run: |
+          docker build -t ${{ steps.vars.outputs.image_name }}:${{ steps.vars.outputs.version_tag }} \
+                       -t ${{ steps.vars.outputs.image_name }}:latest .
+          docker push ${{ steps.vars.outputs.image_name }}:${{ steps.vars.outputs.version_tag }}
+          docker push ${{ steps.vars.outputs.image_name }}:latest
