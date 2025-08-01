@@ -57,13 +57,13 @@ jobs:
       - name: Notify k8s-infra repo to deploy new image
         uses: peter-evans/repository-dispatch@v3
         with:
-          token: ${{ secrets.K8S_INFRA_DISPATCH_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           repository: Derint/k8s-infra
           event-type: update-deployment
           client-payload: >-
             {
-              "repo": "${{ steps.vars.outputs.repo_name }}",
-              "branch": "${{ steps.vars.outputs.branch_name }}",
-              "image": "${{ steps.vars.outputs.image_name }}",
-              "version": "${{ steps.vars.outputs.version_tag }}"
+              "repo": "flask-simple-app",
+              "branch": "main",
+              "image": "ghcr.io/derint/flask-simple-app_main",
+              "version": "1.2.6"
             }
