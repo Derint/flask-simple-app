@@ -34,7 +34,7 @@ jobs:
           OWNER_LOWER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
 
           BUILD_NUMBER="${{ github.run_number }}"
-          VERSION_TAG="1.2.${BUILD_NUMBER}"
+          VERSION_TAG="1.0.${BUILD_NUMBER}"
           IMAGE_NAME="ghcr.io/${OWNER_LOWER}/${REPO_NAME}_${BRANCH_NAME}"
 
           echo "repo_name=$REPO_NAME" >> $GITHUB_OUTPUT
@@ -62,8 +62,8 @@ jobs:
           event-type: update-deployment
           client-payload: >-
             {
-              "repo": "flask-simple-app",
-              "branch": "main",
-              "image": "ghcr.io/derint/flask-simple-app_main",
-              "version": "1.2.6"
+              "repo": "${{ steps.vars.outputs.repo_name }}",
+              "branch": "${{ steps.vars.outputs.branch_name }}",
+              "image": "${{ steps.vars.outputs.image_name }}",
+              "version": "${{ steps.vars.outputs.version_tag }}"
             }
