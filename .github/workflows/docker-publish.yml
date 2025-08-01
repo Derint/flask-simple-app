@@ -57,7 +57,7 @@ jobs:
       - name: Notify k8s-infra repo to deploy new image
         uses: peter-evans/repository-dispatch@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.K8S_INFRA_DISPATCH_TOKEN }}
           repository: Derint/k8s-infra
           event-type: update-deployment
           client-payload: >-
