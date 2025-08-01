@@ -58,5 +58,10 @@ def system_metrics():
     return jsonify({"cpu": "25%", "memory": "512MB", "disk": "40% used"})
 
 
+@app.route("/api/metrics/system/me", methods=["GET"])
+def system_metrics_new():
+    return jsonify({"cpu": "25%", "memory": "1MB", "disk": "90% used"})
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
