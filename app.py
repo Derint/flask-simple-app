@@ -1,16 +1,28 @@
+import os
 from flask import Flask, jsonify
 
 app = Flask(__name__)
 
+# Read config values from environment variables (injected via ConfigMap)
+ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
+LOG_LEVEL = os.getenv("LOG_LEVEL", "debug")
+
 
 @app.route("/")
 def home():
-    return "Welcome to the Flask App!"
+    return f"Welcome to the Flask App running in {ENVIRONMENT} mode!"
 
 
 @app.route("/api/status", methods=["GET"])
 def status():
-    return jsonify({"status": "running", "uptime": "72 hours"})
+    return jsonify(
+        {
+            "status": "running",
+            "uptime": "72 hours",
+            "env": ENVIRONMENT,
+            "log_level": LOG_LEVEL,
+        }
+    )
 
 
 @app.route("/api/user/<int:user_id>", methods=["GET"])

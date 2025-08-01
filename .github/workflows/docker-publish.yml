@@ -24,7 +24,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract image version from deployment.yaml
+      - name: Generate version tag
         id: vars
         run: |
           REPO="${{ github.repository }}"
@@ -33,11 +33,9 @@ jobs:
           BRANCH_NAME=$(echo "$BRANCH" | tr '[:upper:]' '[:lower:]' | tr '/' '_')
           OWNER_LOWER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
 
-          # Extract version tag from the image field in the YAML file
-          IMAGE_LINE=$(grep -E 'image:\s*ghcr\.io/.+:[0-9]+\.[0-9]+\.[0-9]+' argocd/deployment.yaml)
-          VERSION_TAG=$(echo "$IMAGE_LINE" | sed -E 's/.*:([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
-
-          IMAGE_NAME="ghcr.io/${OWNER_LOWER}/flask-simple-app_${BRANCH_NAME}"
+          BUILD_NUMBER="${{ github.run_number }}"
+          VERSION_TAG="1.2.${BUILD_NUMBER}"
+          IMAGE_NAME="ghcr.io/${OWNER_LOWER}/${REPO_NAME}_${BRANCH_NAME}"
 
           echo "repo_name=$REPO_NAME" >> $GITHUB_OUTPUT
           echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
@@ -45,9 +43,27 @@ jobs:
           echo "version_tag=$VERSION_TAG" >> $GITHUB_OUTPUT
           echo "image_name=$IMAGE_NAME" >> $GITHUB_OUTPUT
 
-      - name: Build and push images
+      - name: Build and push Docker images
         run: |
           docker build -t ${{ steps.vars.outputs.image_name }}:${{ steps.vars.outputs.version_tag }} \
                        -t ${{ steps.vars.outputs.image_name }}:latest .
           docker push ${{ steps.vars.outputs.image_name }}:${{ steps.vars.outputs.version_tag }}
           docker push ${{ steps.vars.outputs.image_name }}:latest
+
+      - name: Export version to downstream workflow
+        run: |
+          echo "VERSION_TAG=${{ steps.vars.outputs.version_tag }}" >> $GITHUB_ENV
+
+      - name: Notify k8s-infra repo to deploy new image
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.K8S_INFRA_DISPATCH_TOKEN }}
+          repository: Derint/k8s-infra
+          event-type: update-deployment
+          client-payload: >-
+            {
+              "repo": "${{ steps.vars.outputs.repo_name }}",
+              "branch": "${{ steps.vars.outputs.branch_name }}",
+              "image": "${{ steps.vars.outputs.image_name }}",
+              "version": "${{ steps.vars.outputs.version_tag }}"
+            }
