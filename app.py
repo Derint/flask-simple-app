@@ -36,5 +36,15 @@ def get_data_new():
     return jsonify(sample_data)
 
 
+@app.route("/api/user/info", methods=["GET"])
+def user_info():
+    return jsonify({"username": "demo_user", "role": "admin", "active": True})
+
+
+@app.route("/api/metrics/system", methods=["GET"])
+def system_metrics():
+    return jsonify({"cpu": "25%", "memory": "512MB", "disk": "40% used"})
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
