@@ -30,8 +30,7 @@ jobs:
           REPO="${{ github.repository }}"
           REPO_NAME=$(basename "$REPO" | tr '[:upper:]' '[:lower:]')
           BRANCH="${GITHUB_REF##*/}"
-          # BRANCH_NAME=master 
-          # $(echo "$BRANCH" | tr '[:upper:]' '[:lower:]' | tr '/' '_')
+          BRANCH_NAME=$(echo "$BRANCH" | tr '[:upper:]' '[:lower:]' | tr '/' '_')
           OWNER_LOWER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
 
           BUILD_NUMBER="${{ github.run_number }}"
@@ -39,7 +38,9 @@ jobs:
           IMAGE_NAME="ghcr.io/${OWNER_LOWER}/${REPO_NAME}_${BRANCH_NAME}"
 
           echo "repo_name=$REPO_NAME" >> $GITHUB_OUTPUT
-          echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
+          # echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
+          echo "branch_name=master" >> $GITHUB_OUTPUT
+
           echo "owner=$OWNER_LOWER" >> $GITHUB_OUTPUT
           echo "version_tag=$VERSION_TAG" >> $GITHUB_OUTPUT
           echo "image_name=$IMAGE_NAME" >> $GITHUB_OUTPUT
