@@ -36,10 +36,10 @@ def get_user(user_id):
     )
 
 
-@app.route("/api/data", methods=["GET"])
-def get_data():
-    sample_data = {"items": [1, 2, 3, 4], "count": 4}
-    return jsonify(sample_data)
+# @app.route("/api/data", methods=["GET"])
+# def get_data():
+#     sample_data = {"items": [1, 2, 3, 4], "count": 4}
+#     return jsonify(sample_data)
 
 
 # @app.route("/api/data/new", methods=["GET"])
