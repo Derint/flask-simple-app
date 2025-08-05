@@ -30,7 +30,8 @@ jobs:
           REPO="${{ github.repository }}"
           REPO_NAME=$(basename "$REPO" | tr '[:upper:]' '[:lower:]')
           BRANCH="${GITHUB_REF##*/}"
-          BRANCH_NAME=$(echo "$BRANCH" | tr '[:upper:]' '[:lower:]' | tr '/' '_')
+          # BRANCH_NAME=master 
+          # $(echo "$BRANCH" | tr '[:upper:]' '[:lower:]' | tr '/' '_')
           OWNER_LOWER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
 
           BUILD_NUMBER="${{ github.run_number }}"
