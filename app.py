@@ -42,20 +42,20 @@ def get_data():
     return jsonify(sample_data)
 
 
-@app.route("/api/data/new", methods=["GET"])
-def get_data_new():
-    sample_data = {"data": [1, 2, 3, 4], "count": 4}
-    return jsonify(sample_data)
+# @app.route("/api/data/new", methods=["GET"])
+# def get_data_new():
+#     sample_data = {"data": [1, 2, 3, 4], "count": 4}
+#     return jsonify(sample_data)
 
 
-@app.route("/api/user/info", methods=["GET"])
-def user_info():
-    return jsonify({"username": "demo_user", "role": "admin", "active": True})
+# @app.route("/api/user/info", methods=["GET"])
+# def user_info():
+#     return jsonify({"username": "demo_user", "role": "admin", "active": True})
 
 
-@app.route("/api/metrics/system", methods=["GET"])
-def system_metrics():
-    return jsonify({"cpu": "25%", "memory": "512MB", "disk": "40% used"})
+# @app.route("/api/metrics/system", methods=["GET"])
+# def system_metrics():
+#     return jsonify({"cpu": "25%", "memory": "512MB", "disk": "40% used"})
 
 
 @app.route("/api/metrics/system/me", methods=["GET"])
