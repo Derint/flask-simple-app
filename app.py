@@ -53,9 +53,9 @@ def get_user(user_id):
 #     return jsonify({"username": "demo_user", "role": "admin", "active": True})
 
 
-# @app.route("/api/metrics/system", methods=["GET"])
-# def system_metrics():
-#     return jsonify({"cpu": "25%", "memory": "512MB", "disk": "40% used"})
+@app.route("/api/metrics/system", methods=["GET"])
+def system_metrics():
+    return jsonify({"cpu": "25%", "memory": "512MB", "disk": "40% used"})
 
 
 @app.route("/api/metrics/system/me", methods=["GET"])
